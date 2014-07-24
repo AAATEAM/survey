@@ -1,0 +1,1 @@
+<#include "ajax_hrworkshop.ftl">
