@@ -49,6 +49,48 @@ import com.utils.time.TimeUtil;
 @Component("surveyAction")
 public class SurveyAction extends ExamAction {
 	private static Logger log = LoggerFactory.getLogger(SurveyAction.class);
+	
+	
+	public String survey_list() throws Exception{
+		int currentpage = 0, maxSize = 10, count = 0, maxPage = 0;
+		if("".equals(getpara("pageId"))) currentpage = 1;
+		else currentpage = Integer.parseInt(getpara("pageId")) + 1;
+		
+		if(!"".equals(getpara("maxSize"))) maxSize = Integer.parseInt(getpara("maxSize"));
+		if(!"".equals(getpara("count"))) maxSize = Integer.parseInt(getpara("count"));
+		if(!"".equals(getpara("maxPage"))) maxSize = Integer.parseInt(getpara("maxPage"));
+		
+		
+		
+		pagination.setMaxSize(maxSize);
+		pagination.setTotalSize(count);
+		pagination.setCurrentPage(currentpage);
+		System.out.println("curepage, maxsize, totalpage, totalsize");
+		System.out.println(pagination.getCurrentPage() + "  " + pagination.getMaxSize() + "  " + pagination.getTotalPage() + " " + pagination.getTotalSize());
+		try {
+			String[] params = {"open", getCurrentAccount()};
+			rhs.put("datalist", baseDao.page("from Examarrange a where status = 'open'", pagination));
+			rhs.put("examRecordList", baseDao.find("from Examrecord a where userid='"+getCurrentAccount()+"'"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		rhs.put("maxSize", pagination.getMaxSize());
+		rhs.put("count", pagination.getTotalSize());
+		rhs.put("maxPage", pagination.getTotalPage());
+		rhs.put("currentPage", pagination.getCurrentPage());
+		return "success";
+	}
+	
+	
+	public String survey_home() throws Exception {
+		// TODO Auto-generated method stub
+		survey_list();
+		//exam_record_list();
+		return "success";
+	}
+	
 	public String survey_arrange_list() throws Exception{
 		
 		
