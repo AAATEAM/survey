@@ -1,1 +1,0 @@
-<#include "ajax_organize_role_list.ftl">

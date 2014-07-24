@@ -1,1 +1,0 @@
-<#include "list_file.ftl">

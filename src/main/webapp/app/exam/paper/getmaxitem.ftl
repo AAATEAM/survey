@@ -1,1 +1,0 @@
-${rhs["maxsinglechoicecount"]},${rhs["maxmultichoicecount"]}
