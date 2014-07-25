@@ -59,11 +59,12 @@ var result = [];
 		<#assign ui = 0 >
 		<#list rhs["singleitems"][itemid] as result>
 			<#if result.answer?exists && result.answer?string == choiceitem.refid?string>
-				tmpusr[${ui}] = result.user;
+				tmpusr[${ui}] = "${result.user}";
 				<#assign ui = ui + 1 > 
 			</#if>
 		</#list>
 		users[${choiceitem_index}] = tmpusr;
+		
 	</#list>
 	result[${i}] = {"labels" : labels, "users" : users};	
 <#assign i = i + 1 > 
@@ -82,9 +83,12 @@ $(document).ready(function(){
 	
 });
 
+
+
 function createPie(elobj,index){
 	
 	var tusers = result[index].users;
+	
 	var values = [];
 	var flag = false;
 	var count = 0; //回答问题的人数
@@ -103,13 +107,9 @@ function createPie(elobj,index){
 	//计算 legend 宽
 	var tmpleg = "";
 	for(var i = 0; i < legend.length; i++){
-		if(legend[i].length > tmpleg.length){
-			tmpleg = legend[i];
-		}
+		if(tusers[i].length > 0 ) legend[i] = legend[i] + "  ["+tusers[i]+"]"; 
 		
 	}
-	var legendwidth = tmpleg.length * 7 + 80;
-	
 	
 		
 	$.elycharts.templates['pie_basic_1'] = {
@@ -125,23 +125,29 @@ function createPie(elobj,index){
 		 },
 		 features : {
 		 	legend :{ 
-		 		horizontal : false,width : legendwidth,height : 80, x : 20,y : 20, dotType : "circle",
-		 		dotProps : {stroke : "white","stroke-width" : 0}
+		 		itemWidth: "auto",
+		 		horizontal : false,height : 80, x : 10,y : 10, dotType : "circle",
+		 		dotProps : {stroke : "white","stroke-width" : 0},
+		 		
 		 	}
 		 }
 	};
 	var width = $(window).width();
-	
+	var tips = [];
+	for(var i = 0; i < tusers.length; i++){
+		if(tusers[i].length > 0 ) tips[i] = tusers[i].join(",");
+	}
 	elobj.chart({
 		template : "pie_basic_1",
-		margins : [0, 0, 0, 0],
+		//margins : [150, 0, 0, 700],
+		margins : [70, 0, 0, 0],
 		//width: 500,
 		height: 300,
 		
 		values : {serie1 : values},
 		labels : labels,
 		legend : legend,
-		tooltips : {serie1: legend},
+		tooltips : {serie1: tips},
 		defaultSeries: {values:[{plotProps:{fill: "red"}},{plotProps:{fill: "blue"}},{plotProps:{fill: "green"}},{plotProps:{fill: "gray"}}]}
 		 
 	});

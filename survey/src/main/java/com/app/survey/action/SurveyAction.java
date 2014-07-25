@@ -51,6 +51,63 @@ public class SurveyAction extends ExamAction {
 	private static Logger log = LoggerFactory.getLogger(SurveyAction.class);
 	
 	
+	
+	public String survey_complete() throws Exception {
+		
+		
+		return "success";
+	}
+	
+	public String open_survey() throws ParseException {
+		System.out.println("open_survey  .......");
+		String examId = getpara("examarrangeid");
+		String method = getpara("method");
+		System.out.println("examarrangeid: " + examId + " method: " + method);
+		
+		Examarrange examarrange = (Examarrange) baseDao.loadById("Examarrange", Long.valueOf(examId));
+		Paper paper = (Paper) baseDao.loadById("Paper", Long.valueOf(examarrange.getPaperid()));
+		
+		System.out.println("=========paper.getRmdsinglechoice(): " + paper.getRmdsinglechoice());
+		//开始考试
+		Set<Item> singleitems = new HashSet<Item>();
+		Collection<Item> rmdsingleitems = paper.getRmdItem("1", paper.getRmdsinglechoice());
+		Collection<Item> reqsingleitems = paper.getReqItem("1");
+		singleitems.addAll(reqsingleitems);
+		singleitems.addAll(rmdsingleitems);
+		
+		Set<Item> multiitems = new HashSet<Item>();
+		Collection<Item> rmdmultiitems = paper.getRmdItem("2", paper.getRmdmultichoice());
+		Collection<Item> reqmultiitems = paper.getReqItem("2");
+		multiitems.addAll(reqmultiitems);
+		multiitems.addAll(rmdmultiitems);
+		
+		Set<Item> blankitems = new HashSet<Item>();
+		Collection<Item> rmdblankitems = paper.getRmdItem("3", paper.getRmdblank());
+		Collection<Item> reqblankitems = paper.getReqItem("3");
+		blankitems.addAll(reqblankitems);
+		blankitems.addAll(rmdblankitems);
+		
+		Set<Item> essayitems = new HashSet<Item>();
+		Collection<Item> rmdessayitems = paper.getRmdItem("4", paper.getRmdessay());
+		Collection<Item> reqessayitems = paper.getReqItem("4");
+		essayitems.addAll(reqessayitems);
+		essayitems.addAll(rmdessayitems);
+		
+		rhs.put("singleitems", singleitems);
+		rhs.put("multiitems", multiitems);
+		rhs.put("blankitems", blankitems);
+		rhs.put("essayitems", essayitems);
+		
+		rhs.put("paper", paper);
+		rhs.put("method", method);
+		rhs.put("examarrangeId", examId);
+		
+		
+
+		return "success";
+	}
+	
+	
 	public String survey_list() throws Exception{
 		int currentpage = 0, maxSize = 10, count = 0, maxPage = 0;
 		if("".equals(getpara("pageId"))) currentpage = 1;
@@ -67,14 +124,18 @@ public class SurveyAction extends ExamAction {
 		pagination.setCurrentPage(currentpage);
 		System.out.println("curepage, maxsize, totalpage, totalsize");
 		System.out.println(pagination.getCurrentPage() + "  " + pagination.getMaxSize() + "  " + pagination.getTotalPage() + " " + pagination.getTotalSize());
+//		List<Examarrange> datalist = null;
+//		List<Examrecord> recordList = null;
 		try {
-			String[] params = {"open", getCurrentAccount()};
+//			datalist = (List<Examarrange>)baseDao.page("from Examarrange a where status = 'open'", pagination);
 			rhs.put("datalist", baseDao.page("from Examarrange a where status = 'open'", pagination));
-			rhs.put("examRecordList", baseDao.find("from Examrecord a where userid='"+getCurrentAccount()+"'"));
+			rhs.put("recordList", baseDao.find("from Examrecord a where userid='"+getCurrentAccount()+"'"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 		
 		rhs.put("maxSize", pagination.getMaxSize());
 		rhs.put("count", pagination.getTotalSize());
@@ -164,11 +225,11 @@ public class SurveyAction extends ExamAction {
 		if("assign".equals(method)){
 			excute_complete_assign();
 			page = "survey_surveyPaper_list.do";
-		}else if("start".equals(method)){
+		}else if("start".equalsIgnoreCase(method)){
 			excute_complete_start();
-			page = "survey_survey_survey_home.do";
-		}else{
-			System.out.println("complete_task 未知方法...............");
+		}
+		else{
+			System.out.println("complete_task 未知方法..............." + method);
 		}
 		
 		rhs.put("page", page);
@@ -176,19 +237,6 @@ public class SurveyAction extends ExamAction {
 		return "success";
 		
 	}
-
-	private void excute_complete_assign(){
-		String paperId = getpara("paperid");
-		String status = getpara("svyStatus");
-		String title = getpara("title");
-		Examarrange examarrange = new Examarrange();
-		examarrange.setStatus(status);
-		examarrange.setTitle(title);
-		examarrange.setPaperid(paperId);
-		examarrange.setUserid(getCurrentAccount());
-		baseDao.create(examarrange);
-	}
-	
 	
 	private void excute_complete_start(){
 		Map<String, Object> var = new HashMap<String, Object>();
@@ -218,6 +266,21 @@ public class SurveyAction extends ExamAction {
 		record.setResult(resultset);
 		baseDao.update(record);
 	}
+
+	private void excute_complete_assign(){
+		String paperId = getpara("paperid");
+		String status = getpara("svyStatus");
+		String title = getpara("title");
+		Examarrange examarrange = new Examarrange();
+		examarrange.setStatus(status);
+		examarrange.setTitle(title);
+		examarrange.setPaperid(paperId);
+		examarrange.setUserid(getCurrentAccount());
+		baseDao.create(examarrange);
+	}
+	
+	
+	
 	
 	
 	public String status_arrange(){
