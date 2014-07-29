@@ -5,6 +5,8 @@
 
 <form name="form_item" action="survey_survey_complete_task.do" method="post">
 <input type="hidden" value="<#if rhs.method?exists >${rhs["method"]}</#if>" name="method"/>
+<input type="hidden" value="open" name="svyStatus"/>
+
 <div class="panel panel-primary" style="margin-top: 18px;">
       <div class="panel-heading"><strong>Arrange Examination</strong></div>
       <div class="panel-body">
@@ -12,14 +14,6 @@
       		<tr>
       			<td><strong>Paper Name: </strong><#if rhs["paper"]?exists > ${rhs["paper"].name?if_exists} </#if></td>
       			<input type="hidden" value="<#if rhs["paper"]?exists >${rhs["paper"].id?if_exists}</#if>" name="paperid" />
-      		</tr>
-      		<tr>
-      			<td>
-      			<strong>Status: 
-      			<input type="radio" name="svyStatus" value="open" checked> Open &nbsp;&nbsp;&nbsp;
-      			<input type="radio" name="svyStatus" value="off"> Off
-      			</strong>
-      			</td>
       		</tr>
       		<tr>
       			<td><strong>Survey Title:</strong>

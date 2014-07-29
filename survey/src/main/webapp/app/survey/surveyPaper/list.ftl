@@ -20,7 +20,7 @@
 	<#include "include_add_search.ftl">
 	<div style="position:absolute;">
 		&nbsp;&nbsp;
-		<a class="btn btn-xs btn-primary "  href="survey_surveyPaper_create.do?method=newpaper"><@i18n "menu_paper_new" /> _ Survey</a>
+		<a class="btn btn-xs btn-primary "  href="survey_surveyPaper_create.do?method=newpaper">添加问卷</a>
 	</div>
 </div>
 
@@ -33,11 +33,6 @@
 			<tr>
 			    <td width=25px><strong>#</strong></td>
 				<td width=250px><strong>Paper Name</strong></td>
-			<#--	<td width=150px><strong><@i18n "title_createtime" /></strong></td>-->
-				<td width=120px><strong>Certification Score<#--<@i18n "title_passmark" />--></strong></td>
-				<td width=100px><strong>Total Score <#--<@i18n "title_totalmark" />--></strong></td>
-				<td width=100px><strong><@i18n "title_examtime" /></strong></td>
-				<#--<td width=100px><strong><@i18n "title_status" /></strong></td>-->
 				<td><strong></strong></td>
 				<td></td>
 			</tr>
@@ -49,16 +44,11 @@
 			 <tr>
 			    <td class=nob >${index}</td>
 				<td><#if x.businessModel.papergroup?exists>[${x.businessModel.papergroup.name}]</#if>&nbsp;${x.businessModel.name?if_exists}</td>
-				<#--<td>${x.businessModel.createdate?if_exists}</td>-->
-				<td>${x.businessModel.passmark?if_exists}</td>
-				<td>${x.businessModel.totalmark?if_exists}</td>
-				<td>${x.businessModel.time?if_exists} &nbsp;(Minutes)</td>
-				<#--<td>${x.processInstanceStatus}</td>-->
 				<td><a href="survey_surveyPaper_load.do?method=edit&id=${x.businessModel.id}"><@i18n "title_edit" /></a> <#--| <a href="survey_surveyPaper_load.do?method=show&id=${x.businessModel.id}"> <@i18n "title_view" /></a>--> <#if (!(x.businessModel.processInstanceId?exists&&x.businessModel.processInstanceId != "") && x.processInstanceStatus == 'New' || x.processInstanceStatus == 'Done') >| <a href="survey_surveyPaper_delete.do?id=${x.businessModel.id}"><@i18n "title_delete" /></a> </#if> </td>
 				<td>	    		
 				<a id="startProcess${x.businessModel.id}" title="Start Process" class="btn btn-xs btn-primary" href="survey_surveyPaper_assign.do?id=${x.businessModel.id}">
-					    		Schedule _ survey</a>
-				<a  title="View Paper" class="btn btn-xs btn-primary" href="survey_survey_show_answer.do?paperId=${x.businessModel.id}">Show Answer</a>
+					    		安排调查</a>
+				<a  title="View Paper" class="btn btn-xs btn-primary" href="survey_survey_show_answer.do?paperId=${x.businessModel.id}">显示调查结果</a>
 					    		
 				</td>
 			</tr>
